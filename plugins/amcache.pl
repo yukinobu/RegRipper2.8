@@ -2,6 +2,7 @@
 # amcache.pl 
 #   
 # Change history
+#   20170315 - added output for Product Name and File Description values
 #   20160818 - added check for value 17
 #   20131218 - fixed bug computing compile time
 #   20131213 - updated 
@@ -10,7 +11,7 @@
 # References
 #   http://www.swiftforensics.com/2013/12/amcachehve-in-windows-8-goldmine-for.html
 #
-# Copyright (c) 2013 QAR, LLC
+# Copyright (c) 2017 QAR, LLC
 # Author: H. Carvey, keydet89@yahoo.com
 #-----------------------------------------------------------
 package amcache;
@@ -22,7 +23,7 @@ my %config = (hive          => "amcache",
               hasRefs       => 1,
               osmask        => 22,
               category      => "program execution",
-              version       => 20160818);
+              version       => 20170315);
 my $VERSION = getVersion();
 
 # Functions #
@@ -31,7 +32,7 @@ sub getHive {return $config{hive};}
 sub getVersion {return $config{version};}
 sub getDescr {}
 sub getShortDescr {
-	return "Parse AmCache.hve file";
+	return "Parse AmCache\.hve file";
 }
 sub getRefs {}
 
@@ -72,6 +73,18 @@ sub pluginmain {
 					
 					eval {
 						::rptMsg("Company Name  : ".$s->get_value("1")->get_data());
+					};
+					
+					eval {
+						::rptMsg("Product Name  : ".$s->get_value("0")->get_data());
+					};
+					
+					eval {
+						::rptMsg("File Descr    : ".$s->get_value("c")->get_data());
+					};
+					
+					eval {
+						::rptMsg("Lang Code     : ".$s->get_value("3")->get_data());
 					};
 					
 					eval {
