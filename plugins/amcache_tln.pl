@@ -37,7 +37,7 @@ sub pluginmain {
 	my $hive = shift;
 	
 	# Initialize #
-	::logMsg("Launching amcache v.".$VERSION);
+	::logMsg("Launching amcache_tln v.".$VERSION);
 #  ::rptMsg("amcache v.".$VERSION); 
 #  ::rptMsg("(".$config{hive}.") ".getShortDescr()."\n");     
 	my $reg = Parse::Win32Registry->new($hive);
