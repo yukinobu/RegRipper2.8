@@ -49,7 +49,7 @@ sub pluginmain {
 	my @paths = ("TeamViewer",
 	             "Wow6432Node\\TeamViewer");
 	
-	my @vals = ("InstallationDate","Version","InstallationDirectory","InstallationRev","LastUpdateCheck","LastKeepalivePerformance","LastMACUsed");
+	my @vals = ("InstallationDate","Version","InstallationDirectory","InstallationRev","LastUpdateCheck","LastKeepalivePerformance","LastMACUsed","ClientID");
 	
 	my $key2;
 	my $installDir = "InstallationDirectory";
