@@ -1,6 +1,7 @@
-# 20161213 *ALL* Plugins that apply on NTUSER hive, alphabetical order
+# 20170415 *ALL* Plugins that apply on NTUSER hive, alphabetical order
 acmru
 adoberdr
+ahaha
 aim
 aports
 appcompatflags
@@ -36,6 +37,9 @@ domains
 environment
 fileexts
 filehistory
+foxitrdr
+gpohist
+gpohist_tln
 gthist
 gtwhitelist
 haven_and_hearth
@@ -44,6 +48,7 @@ iejava
 ie_main
 ie_settings
 ie_zones
+inprocserver
 internet_explorer_cu
 internet_settings_cu
 itempos
@@ -90,11 +95,13 @@ profiler
 proxysettings
 publishingwizard
 putty
+putty_sessions
 rdphint
 reading_locations
 realplayer6
 realvnc
 recentdocs
+recentdocs_timeline
 recentdocs_tln
 reveton
 rootkit_revealer
@@ -122,6 +129,8 @@ typedurls
 typedurlstime
 typedurlstime_tln
 typedurls_tln
+uninstall
+uninstall_tln
 unreadmail
 urun_tln
 userassist
