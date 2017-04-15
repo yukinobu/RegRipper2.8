@@ -1,5 +1,6 @@
-# 20161213 *ALL* Plugins that apply on SOFTWARE hive, alphabetical order
+# 20170415 *ALL* Plugins that apply on SOFTWARE hive, alphabetical order
 ahaha
+appcompatflags
 appinitdlls
 apppaths
 apppaths_tln
@@ -17,6 +18,7 @@ cmd_shell_tln
 codeid
 ctrlpnl
 dcom
+defbrowser
 dfrg
 direct
 direct_tln
@@ -38,6 +40,7 @@ inprocserver
 installedcomp
 installer
 javasoft
+kankan
 kb950582
 landesk
 landesk_tln
@@ -58,6 +61,7 @@ opencandy
 port_dev
 product
 profilelist
+psscript
 regback
 removdev
 renocide
@@ -89,10 +93,10 @@ virut
 volinfocache
 wbem
 winbackup
-win_cv
 winevt
 winlogon
 winlogon_tln
 winnt_cv
 winver
+win_cv
 yahoo_lm
