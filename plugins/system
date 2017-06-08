@@ -1,4 +1,4 @@
-# 20161213 *ALL* Plugins that apply on SYSTEM hive, alphabetical order
+# 20170415 *ALL* Plugins that apply on SYSTEM hive, alphabetical order
 appcertdlls
 appcompatcache
 appcompatcache_tln
@@ -39,6 +39,7 @@ prefetch
 processor_architecture
 productpolicy
 producttype
+profiler
 rdpnla
 rdpport
 regin
