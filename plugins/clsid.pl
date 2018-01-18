@@ -4,6 +4,7 @@
 # Can take considerable time to run; recommend running it via rip.exe
 #
 # History
+#   20180117 - updated based on input from Jean, jean.crush@hotmail.fr
 #   20130603 - added alert functionality
 #   20100227 - created
 #
@@ -20,7 +21,7 @@ my %config = (hive          => "Software",
               hasShortDescr => 1,
               hasDescr      => 0,
               hasRefs       => 0,
-              version       => 20130603);
+              version       => 20180117);
 
 sub getConfig{return %config}
 
@@ -40,47 +41,49 @@ sub pluginmain {
 	my %clsid;
 	::logMsg("Launching clsid v.".$VERSION);
 	::rptMsg("clsid v.".$VERSION); # banner
-    ::rptMsg("(".$config{hive}.") ".getShortDescr()."\n"); # banner
+  ::rptMsg("(".$config{hive}.") ".getShortDescr()."\n"); # banner
 	my $reg = Parse::Win32Registry->new($hive);
 	my $root_key = $reg->get_root_key;
 
-	my $key_path = "Classes\\CLSID";
-	my $key;
-	if ($key = $root_key->get_subkey($key_path)) {
-		::rptMsg($key_path);
+#	my $key_path = "Classes\\CLSID";
+  my @paths = ("Classes\\CLSID","Classes\\Wow6432Node\\CLSID");
+  foreach my $key_path (@paths) {
+		my $key;
+		if ($key = $root_key->get_subkey($key_path)) {
+			::rptMsg($key_path);
 #		::rptMsg("LastWrite Time ".gmtime($key->get_timestamp())." (UTC)");
-		::rptMsg("");
+			::rptMsg("");
 # First step will be to get a list of all of the file extensions
-		my %ext;
-		my @sk = $key->get_list_of_subkeys();
-		if (scalar(@sk) > 0) {
-			foreach my $s (@sk) {
+			my %ext;
+			my @sk = $key->get_list_of_subkeys();
+			if (scalar(@sk) > 0) {
+				foreach my $s (@sk) {
 				
-				my $name = $s->get_name();
-				eval {
-					my $n = $s->get_value("")->get_data();
-					$name .= "  ".$n unless ($n eq "");
-				};
+					my $name = $s->get_name();
+					eval {
+						my $n = $s->get_value("")->get_data();
+						$name .= "  ".$n unless ($n eq "");
+					};
 				
-			  eval {
-			  	my $path = $s->get_subkey("InprocServer32")->get_value("")->get_data();
-			  	alertCheckPath($path);
-			  	alertCheckADS($path);
-			  	
-			  };
+			  	eval {
+			  		my $path = $s->get_subkey("InprocServer32")->get_value("")->get_data();
+#			  		alertCheckPath($path);
+#			  		alertCheckADS($path);
+			  	};
 				
-				push(@{$clsid{$s->get_timestamp()}},$name);
-			}
+					push(@{$clsid{$s->get_timestamp()}},$name);
+				}
 			
-			foreach my $t (reverse sort {$a <=> $b} keys %clsid) {
-				::rptMsg(gmtime($t)." Z");
-				foreach my $item (@{$clsid{$t}}) {
-					::rptMsg("  ".$item);
+				foreach my $t (reverse sort {$a <=> $b} keys %clsid) {
+					::rptMsg(gmtime($t)." Z");
+					foreach my $item (@{$clsid{$t}}) {
+						::rptMsg("  ".$item);
+					}
 				}
 			}
-		}
-		else {
-			::rptMsg($key_path." has no subkeys.");
+			else {
+				::rptMsg($key_path." has no subkeys.");
+			}
 		}
 	}
 	else {
