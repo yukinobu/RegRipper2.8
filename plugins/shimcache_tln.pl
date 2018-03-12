@@ -5,6 +5,7 @@
 # works within an analysis process.
 #
 # History:
+#  20180311 - updated for more recent version of Win10/Win2016
 #  20160528 - created
 #
 # References:
@@ -31,7 +32,7 @@ my %config = (hive          => "System",
               hasDescr      => 0,
               hasRefs       => 0,
               osmask        => 31,  
-              version       => 20160528);
+              version       => 20180311);
 
 sub getConfig{return %config}
 sub getShortDescr {
@@ -109,7 +110,7 @@ sub pluginmain {
 			elsif ($sig == 0x80) {
 				appWin8($app_data);				
 			}
-			elsif ($sig == 0x30) {
+			elsif ($sig == 0x30 || $sig == 0x34) {
 				appWin10($app_data);				
 			}
 			else {
@@ -118,14 +119,16 @@ sub pluginmain {
 
 			foreach my $f (keys %files) {
 				my $str;
-				if (exists $files{$f}{executed}) {
-					$str = "M... [Program Execution] AppCompatCache - ".$files{$f}{filename};
+				next if ($files{$f}{modtime} == 0);
+				if (exists $files{$f}{updtime}) {
+#					$str = "[Program Execution] AppCompatCache - ".$files{$f}{filename};
+					next if ($files{$f}{updtime} == 0);
+          ::rptMsg($files{$f}{updtime}."|REG|||[Program Execution] - ".$files{$f}{filename});
 				}
-				else {
-					$str = "M... AppCompatCache - ".$files{$f}{filename};
-				}
+				
+				$str = "M... AppCompatCache - ".$files{$f}{filename};
 				$str .= " [Size = ".$files{$f}{size}." bytes]" if (exists $files{$f}{size});
-				$str .= " [Executed]" if (exists $files{$f}{executed}); 
+
 				::rptMsg($files{$f}{modtime}."|REG|||".$str);
 			}
 		}
@@ -148,8 +151,8 @@ sub appXP32Bit {
 	
 	foreach my $i (0..($num_entries - 1)) {
 		my $x = substr($data,(400 + ($i * 552)),552);
-		my $file = (split(/\x00\x00/,substr($x,0,488)))[0];
-		$file =~ s/\x00//g;
+		my $file = (split(/\00\00/,substr($x,0,488)))[0];
+		$file =~ s/\00//g;
 		$file =~ s/^\\\?\?\\//;
 		my ($mod1,$mod2) = unpack("VV",substr($x,528,8));
 		my $modtime      = ::getTime($mod1,$mod2);
@@ -192,7 +195,7 @@ sub appWin2k3 {
 			my ($len,$max_len,$ofs,$t0,$t1,$f0,$f1) = unpack("vvVVVVV",$struct);
 			
 			my $file = substr($data,$ofs,$len);
-			$file =~ s/\x00//g;
+			$file =~ s/\00//g;
 			$file =~ s/^\\\?\?\\//;
 			my $t = ::getTime($t0,$t1);
 			$files{$i}{filename} = $file;
@@ -203,7 +206,7 @@ sub appWin2k3 {
 		elsif ($struct_sz == 32) {
 			my ($len,$max_len,$padding,$ofs0,$ofs1,$t0,$t1,$f0,$f1) = unpack("vvVVVVVVV",$struct);
 			my $file = substr($data,$ofs0,$len);
-			$file =~ s/\x00//g;
+			$file =~ s/\00//g;
 			$file =~ s/^\\\?\?\\//;
 			my $t = ::getTime($t0,$t1);
 			$files{i}{filename} = $file;
@@ -245,7 +248,7 @@ sub appWin7 {
 		if ($struct_sz == 32) {
 			my ($len,$max_len,$ofs,$t0,$t1,$f0,$f1) = unpack("vvV5x8",$struct);
 			my $file = substr($data,$ofs,$len);
-			$file =~ s/\x00//g;
+			$file =~ s/\00//g;
 			$file =~ s/^\\\?\?\\//;
 			my $t = ::getTime($t0,$t1);
  			$files{$i}{filename} = $file;	
@@ -255,7 +258,7 @@ sub appWin7 {
 		else {
 			my ($len,$max_len,$padding,$ofs0,$ofs1,$t0,$t1,$f0,$f1) = unpack("vvV7x16",$struct);
 			my $file = substr($data,$ofs0,$len);
-			$file =~ s/\x00//g;
+			$file =~ s/\00//g;
 			$file =~ s/^\\\?\?\\//;
 			my $t = ::getTime($t0,$t1);
  			$files{$i}{filename} = $file;	
@@ -283,7 +286,7 @@ sub appWin8 {
 			($t0,$t1) = unpack("VV",substr($data,$ofs + 12,8));
 			$sz = unpack("v",substr($data,$ofs + 20,2));
 			$name = substr($data,$ofs + 22,$sz);
-			$name =~ s/\x00//g;
+			$name =~ s/\00//g;
 			$files{$ct}{filename} = $name;
 			$files{$ct}{modtime} = ::getTime($t0,$t1);
 			$ct++;
@@ -294,7 +297,7 @@ sub appWin8 {
 			$jmp = unpack("V",substr($data,$ofs + 8,4));
 			$sz = unpack("v",substr($data,$ofs + 0x0C,2));
 			$name = substr($data,$ofs + 0x0E,$sz + 2);
-			$name =~ s/\x00//g;
+			$name =~ s/\00//g;
 			($t0,$t1) = unpack("VV",substr($data,($ofs + 0x0E + $sz +2 + 8),8));
 			$files{$ct}{filename} = $name;
 			$files{$ct}{modtime} = ::getTime($t0,$t1);
@@ -317,7 +320,8 @@ sub appWin10 {
 	my $len = length($data);
 	my ($tag, $sz, $t0, $t1, $name, $name_len);
 	my $ct = 0;
-	my $ofs = 0x30;
+	my $ofs = unpack("V",substr($data,0,4));
+#	my $ofs = 0x30;
 	
 	while ($ofs < $len) {
 		$tag = substr($data,$ofs,4);
@@ -326,7 +330,7 @@ sub appWin10 {
 			$sz = unpack("V",substr($data,$ofs + 0x08,4));
 			$name_len   = unpack("v",substr($data,$ofs + 0x0c,2));
 			my $name      = substr($data,$ofs + 0x0e,$name_len);
-			$name =~ s/\x00//g;
+			$name =~ s/\00//g;
 #			($t0,$t1) = unpack("VV",substr($data,$ofs + 0x03 + $name_len,8));
 			($t0,$t1) = unpack("VV",substr($data,$ofs + 0x0e + $name_len,8));
 			$files{$ct}{filename} = $name;

@@ -2,6 +2,7 @@
 # appcompatcache_tln.pl
 #
 # History:
+#  20180311 - updated for more recent version of Win10/Win2016
 #  20160528 - updated code to not de-dup entries based on filename
 #  20160217 - updated to correctly support Win10
 #  20150611 - mod'd for Kevin Pagano
@@ -42,7 +43,7 @@ my %config = (hive          => "System",
               hasDescr      => 0,
               hasRefs       => 0,
               osmask        => 31,  #XP - Win7
-              version       => 20160528);
+              version       => 20180311);
 
 sub getConfig{return %config}
 sub getShortDescr {
@@ -120,7 +121,7 @@ sub pluginmain {
 #				probe($app_data);
 				
 			}
-			elsif ($sig == 0x30) {
+			elsif ($sig == 0x30 || $sig == 0x34) {
 # Windows 10 system
 				appWin10($app_data);				
 			}
@@ -331,7 +332,8 @@ sub appWin10 {
 	my $len = length($data);
 	my ($tag, $sz, $t0, $t1, $name, $name_len);
 	my $ct = 0;
-	my $ofs = 0x30;
+	my $ofs = unpack("V",substr($data,0,4));
+#	my $ofs = 0x30;
 	
 	while ($ofs < $len) {
 		$tag = substr($data,$ofs,4);

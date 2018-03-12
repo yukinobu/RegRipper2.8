@@ -5,6 +5,7 @@
 # works within an analysis process.
 #
 # History:
+#  20180311 - updated for more recent version of Win10/Win2016
 #  20160528 - updated
 #  20160502 - created
 #
@@ -32,7 +33,7 @@ my %config = (hive          => "System",
               hasDescr      => 0,
               hasRefs       => 0,
               osmask        => 31,  
-              version       => 20160528);
+              version       => 20180311);
 
 sub getConfig{return %config}
 sub getShortDescr {
@@ -110,7 +111,7 @@ sub pluginmain {
 			elsif ($sig == 0x80) {
 				appWin8($app_data);				
 			}
-			elsif ($sig == 0x30) {
+			elsif ($sig == 0x30 || $sig == 0x34) {
 				appWin10($app_data);				
 			}
 			else {
@@ -323,7 +324,8 @@ sub appWin10 {
 	my $len = length($data);
 	my ($tag, $sz, $t0, $t1, $name, $name_len);
 	my $ct = 0;
-	my $ofs = 0x30;
+	my $ofs = unpack("V",substr($data,0,4));
+#	my $ofs = 0x30;
 	
 	while ($ofs < $len) {
 		$tag = substr($data,$ofs,4);
