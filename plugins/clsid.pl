@@ -4,6 +4,7 @@
 # Can take considerable time to run; recommend running it via rip.exe
 #
 # History
+#   20180319 - fixed minor code issue
 #   20180117 - updated based on input from Jean, jean.crush@hotmail.fr
 #   20130603 - added alert functionality
 #   20100227 - created
@@ -21,7 +22,7 @@ my %config = (hive          => "Software",
               hasShortDescr => 1,
               hasDescr      => 0,
               hasRefs       => 0,
-              version       => 20180117);
+              version       => 20180319);
 
 sub getConfig{return %config}
 
@@ -85,9 +86,9 @@ sub pluginmain {
 				::rptMsg($key_path." has no subkeys.");
 			}
 		}
-	}
-	else {
-		::rptMsg($key_path." not found.");
+		else {
+			::rptMsg($key_path." not found.");
+		}
 	}
 }
 
