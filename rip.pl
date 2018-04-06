@@ -8,6 +8,7 @@
 # Usage: see "_syntax()" function
 #
 # Change History
+#   20180406 - added "-uP" switch to update profiles
 #   20130801 - added File::Spec support, for cross-platform compat.
 #   20130716 - added 'push(@INC,$str);' line based on suggestion from
 #              Hal Pomeranz to support Linux compatibility
@@ -46,7 +47,7 @@ use File::Spec;
 
 my %config;
 Getopt::Long::Configure("prefix_pattern=(-|\/)");
-GetOptions(\%config,qw(reg|r=s file|f=s csv|c guess|g user|u=s sys|s=s plugin|p=s list|l help|?|h));
+GetOptions(\%config,qw(reg|r=s file|f=s csv|c guess|g user|u=s sys|s=s plugin|p=s update|uP list|l help|?|h));
 
 # Code updated 20090102
 my @path;
@@ -63,7 +64,7 @@ $str =~ s/($path[scalar(@path) - 1])//;
 my $plugindir = File::Spec->catfile("plugins");
 #print "Plugins Dir = ".$plugindir."\n";
 # End code update
-my $VERSION = "2\.8_20130801";
+my $VERSION = "2\.8_20180406";
 my @alerts = ();
 
 if ($config{help} || !%config) {
@@ -103,6 +104,55 @@ if ($config{list}) {
 			}
 		};
 		print "Error: $@\n" if ($@);
+	}
+	exit;
+}
+
+#-------------------------------------------------------------
+# 
+#-------------------------------------------------------------
+if ($config{update}) {
+	my @plugins;
+	opendir(DIR,$plugindir) || die "Could not open $plugindir: $!\n";
+	@plugins = readdir(DIR);
+	closedir(DIR);
+# hash of lists to hold plugin names	
+	my %files = ();
+
+	foreach my $p (@plugins) {
+		next unless ($p =~ m/\.pl$/);
+# $pkg = name of plugin		
+		my $pkg = (split(/\./,$p,2))[0];
+#		$p = $plugindir.$p;
+		$p = File::Spec->catfile($plugindir,$p);
+		eval {
+			require $p;
+			my $hive    = $pkg->getHive();
+			my @hives = split(/,/,$hive);
+			foreach my $h (@hives) {
+				my $lch = lc($h);
+				$lch =~ s/\.dat$//;
+				$lch =~ s/^\s+//;
+				
+				push(@{$files{$lch}},$pkg);
+				
+			}
+
+		};
+		print "Error: $@\n" if ($@);
+	}
+		
+# once hash of lists is populated, print files		
+	foreach my $f (keys %files) {
+		my $filepath = $plugindir."\\".$f;
+		open(FH,">",$filepath) || die "Could not open ".$filepath." to write: $!";
+		
+		for my $i (0..$#{$files{$f}}) {
+			next if ($files{$f}[$i] =~ m/tln$/);
+			print FH $files{$f}[$i]."\n";
+		}
+
+		close(FH);	
 	}
 	exit;
 }
@@ -199,6 +249,7 @@ Parse Windows Registry files, using either a single module, or a plugins file.
   -c ................Output list in CSV format (use with -l)
   -s system name.....Server name (TLN support)
   -u username........User name (TLN support)
+  -uP ...............Update profiles
   -h.................Help (print this information)
   
 Ex: C:\\>rip -r c:\\case\\system -f system
@@ -207,7 +258,7 @@ Ex: C:\\>rip -r c:\\case\\system -f system
 
 All output goes to STDOUT; use redirection (ie, > or >>) to output to a file\.
   
-copyright 2013 Quantum Analytics Research, LLC
+copyright 2018 Quantum Analytics Research, LLC
 EOT
 }
 
