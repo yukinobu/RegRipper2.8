@@ -4,9 +4,10 @@ whatsoever with your system, there's always the chance that someone may find
 a way to blame a system crash or loss of data on software like this...you've
 been warned!
 
-This software is released under the GNU Public License - 
-http://www.gnu.org/copyleft/gpl.html
+This project is licensed under terms of the MIT License - 
+https://opensource.org/licenses/MIT
 
-Specifically, GPL v2.0: http://www.gnu.org/licenses/gpl-2.0.html
+See also:
+https://en.wikipedia.org/wiki/MIT_License
 
 Questions, comments, etc., can be sent to keydet89 at yahoo dot com.
