@@ -3,6 +3,7 @@
 # Plugin for Registry Ripper 
 #
 # Change history
+#   20180702 - update to parseGUID function
 #   20180627 - updated to address Win10, per input from Geoff Rempel
 #   20121005 - updated to address shell item type 0x3A
 #   20121005 - updated to parse shell item ID lists
@@ -27,7 +28,7 @@ my %config = (hive          => "NTUSER\.DAT",
               hasDescr      => 0,
               hasRefs       => 0,
               osmask        => 22,
-              version       => 20121008);
+              version       => 20180702);
 
 sub getConfig{return %config}
 sub getShortDescr {
@@ -525,8 +526,8 @@ sub parseGUID {
   my $d3 = unpack("v",substr($data,6,2));
 	my $d4 = unpack("H*",substr($data,8,2));
   my $d5 = unpack("H*",substr($data,10,6));
-# ---- Added 20180627
-  my $guid = sprintf "{%08x-%x-%x-$d4-$d5}",$d1,$d2,$d3;
+# ---- Added 20180627, updated 20180702
+  my $guid = sprintf "{%08x-%04x-%04x-$d4-$d5}",$d1,$d2,$d3;
   
   if (exists $folder_types{$guid}) {
   	return "CLSID_".$folder_types{$guid};

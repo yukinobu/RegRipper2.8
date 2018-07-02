@@ -3,6 +3,7 @@
 # RR plugin to parse (Vista, Win7/Win2008R2) shell bags
 #
 # History:
+#   20180702 - update to parseGUID function
 #   20180117 - modification thanks to input/data from Mike Godfrey
 #   20160706 - update
 #   20150325 - updated parsing based on input from Eric Zimmerman
@@ -33,7 +34,7 @@
 # Moore for writing the shell bag parser for Registry Decoder, as well as 
 # assistance with some parsing.
 #
-# License: GPL v3 
+# 
 # copyright 2015 Quantum Analytics Research, LLC
 # Author: H. Carvey, keydet89@yahoo.com
 #-----------------------------------------------------------
@@ -49,7 +50,7 @@ my %config = (hive          => "USRCLASS\.DAT",
               hasShortDescr => 1,
               hasDescr      => 0,
               hasRefs       => 0,
-              version       => 20180117);
+              version       => 20180702);
 
 sub getConfig{return %config}
 
@@ -92,6 +93,7 @@ my %cp_guids = ("{bb64f8a7-bee7-4e1a-ab8d-7d8273f7fdb6}" => "Action Center",
     "{a3dd4f92-658a-410f-84fd-6fbbbef2fffe}" => "Internet Options",
     "{a304259d-52b8-4526-8b1a-a1d6cecc8243}" => "iSCSI Initiator",
     "{725be8f7-668e-4c7b-8f90-46bdb0936430}" => "Keyboard",
+    "{bf782cc9-5a52-4a17-806c-2a894ffeeac5}" => "Language Settings",
     "{e9950154-c418-419e-a90a-20c5287ae24b}" => "Location and Other Sensors",
     "{1fa9085f-25a2-489b-85d4-86326eedcd87}" => "Manage Wireless Networks",
     "{6c8eec18-8d75-41b2-a177-8831d59d2d50}" => "Mouse",
@@ -611,8 +613,8 @@ sub parseGUID {
   my $d3 = unpack("v",substr($data,6,2));
 	my $d4 = unpack("H*",substr($data,8,2));
   my $d5 = unpack("H*",substr($data,10,6));
-  my $guid = sprintf "{%08x-%x-%x-$d4-$d5}",$d1,$d2,$d3;
-  
+  my $guid = sprintf "{%08x-%04x-%04x-$d4-$d5}",$d1,$d2,$d3;
+
   if (exists $cp_guids{$guid}) {
   	return "CLSID_".$cp_guids{$guid};
   }
