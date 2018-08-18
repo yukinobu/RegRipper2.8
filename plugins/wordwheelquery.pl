@@ -3,6 +3,7 @@
 # For Windows 7
 #
 # Change history
+#	  20180818 - fixed 2-byte character corruption
 #	  20100330 - created
 #
 # References
@@ -12,13 +13,14 @@
 #-----------------------------------------------------------
 package wordwheelquery;
 use strict;
+use Encode qw/decode/;
 
 my %config = (hive          => "NTUSER\.DAT",
               hasShortDescr => 1,
               hasDescr      => 0,
               hasRefs       => 0,
               osmask        => 22,
-              version       => 20100330);
+              version       => 20180818);
 
 sub getConfig{return %config}
 sub getShortDescr {
@@ -57,7 +59,7 @@ sub pluginmain {
 				}
 				else {
 					my $data = $v->get_data();
-					$data =~ s/\x00//g;
+					$data = decode('ucs-2le',$data);
 					$wwq{$name} = $data;
 				}
 			}
