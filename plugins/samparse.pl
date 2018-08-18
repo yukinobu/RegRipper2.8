@@ -3,6 +3,7 @@
 # Parse the SAM hive file for user/group membership info
 #
 # Change history:
+#    20180818 - fixed 2-byte character corruption
 #    20160203 - updated to include add'l values (randomaccess/Phill Moore contribution)
 #    20120722 - updated %config hash
 #    20110303 - Fixed parsing of SID, added check for account type
@@ -23,6 +24,7 @@
 #-----------------------------------------------------------
 package samparse;
 use strict;
+use Encode qw/decode/;
 
 my %config = (hive          => "SAM",
               hivemask      => 2,
@@ -32,7 +34,7 @@ my %config = (hive          => "SAM",
               hasShortDescr => 1,
               hasDescr      => 0,
               hasRefs       => 1,
-              version       => 20160203);
+              version       => 20180818);
 
 sub getConfig{return %config}
 
@@ -122,12 +124,12 @@ sub pluginmain {
 					my $surname;
 					eval {
 						$given = $u->get_value("GivenName")->get_data();
-						$given =~ s/\x00//g;
+						$given = _uniToAscii($given);
 					};
 					
 					eval {
 						$surname = $u->get_value("SurName")->get_data();
-						$surname =~ s/\x00//g;
+						$surname = _uniToAscii($surname);
 					};
 					
 					::rptMsg("Name            : ".$given." ".$surname);
@@ -135,7 +137,7 @@ sub pluginmain {
 					my $internet;
 					eval {
 						$internet = $u->get_value("InternetUserName")->get_data();
-						$internet =~ s/\x00//g;
+						$internet = _uniToAscii($internet);
 						::rptMsg("InternetName    : ".$internet);
 					};
 					
@@ -144,7 +146,7 @@ sub pluginmain {
 					my $pw_hint;
 					eval {
 						$pw_hint = $u->get_value("UserPasswordHint")->get_data();
-						$pw_hint =~ s/\x00//g;
+						$pw_hint = _uniToAscii($pw_hint);
 					};
 					::rptMsg("Password Hint   : ".$pw_hint) unless ($@);
 					::rptMsg("Last Login Date : ".$lastlogin);
@@ -345,7 +347,7 @@ sub _translateSID {
 #---------------------------------------------------------------------
 sub _uniToAscii {
   my $str = $_[0];
-  $str =~ s/\x00//g;
+  $str = decode('ucs-2le',$str);
   return $str;
 }
 
