@@ -1,6 +1,4 @@
-RegRipper2.8
-============
+# **RegRipper2.8_jpfix**
 
-RegRipper version 2.8
+[RegRipper2.8](https://github.com/keydet89/RegRipper2.8)
 
-This is the GitHub repository for RegRipper version 2.8
