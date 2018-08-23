@@ -4,6 +4,7 @@
 # Can take considerable time to run; recommend running it via rip.exe
 #
 # History
+#   20180823 - minor code fix
 #   20180820 - created
 #
 # References
@@ -21,7 +22,7 @@ my %config = (hive          => "Software",
               hasShortDescr => 1,
               hasDescr      => 0,
               hasRefs       => 0,
-              version       => 20180819);
+              version       => 20180823);
 
 sub getConfig{return %config}
 
@@ -61,10 +62,10 @@ sub pluginmain {
 					my ($descr,$ts,$proc,$treat);
 					
 					$descr = $s->get_name();
+					$ts = $s->get_timestamp();
 					eval {
 						my $n = $s->get_value("")->get_data();
 						$descr .= "  ".$n unless ($n eq "");
-						$ts = $s->get_timestamp();
 					};
 				
 			  	eval {

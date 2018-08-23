@@ -4,6 +4,7 @@
 # Can take considerable time to run; recommend running it via rip.exe
 #
 # History
+#   20180823 - minor code fix
 #   20180819 - updated to incorporate check for "TreatAs" value; code rewrite
 #   20180319 - fixed minor code issue
 #   20180117 - updated based on input from Jean, jean.crush@hotmail.fr
@@ -25,7 +26,7 @@ my %config = (hive          => "Software",
               hasShortDescr => 1,
               hasDescr      => 0,
               hasRefs       => 0,
-              version       => 20180819);
+              version       => 20180823);
 
 sub getConfig{return %config}
 
@@ -64,13 +65,15 @@ sub pluginmain {
 				foreach my $s (@sk) {
 				
 					my $name = $s->get_name();
+					my $n;
 					eval {
-						my $n = $s->get_value("")->get_data();
+						$n = $s->get_value("")->get_data();
 						$name .= "  ".$n unless ($n eq "");
-						::rptMsg($name);
-						::rptMsg("  LastWrite: ".gmtime($s->get_timestamp())." Z");
 					};
-				
+					
+					::rptMsg($name);
+					::rptMsg("  LastWrite: ".gmtime($s->get_timestamp())." Z");
+					
 			  	eval {
 			  		my $proc = $s->get_subkey("InprocServer32")->get_value("")->get_data();
 						::rptMsg("  InprocServer32: ".$proc);
