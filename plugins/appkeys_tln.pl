@@ -64,7 +64,7 @@ sub pluginmain {
 					
 					eval {
 						my $assoc = $s->get_value("Association")->get_data();
-						::rptMsg($sk_lw."|AppKeys|||AppKey\\".$name." LastWrite - Association Value: ".$shell);
+						::rptMsg($sk_lw."|AppKeys|||AppKey\\".$name." LastWrite - Association Value: ".$assoc);
 					};
 				}
 			}
