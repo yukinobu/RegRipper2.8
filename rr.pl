@@ -37,8 +37,6 @@
 # copyright 2013 Quantum Research Analytics, LLC
 # Author: H. Carvey, keydet89@yahoo.com
 # 
-# This software is released via the GPL v3.0 license:
-# http://www.gnu.org/licenses/gpl.html
 #-----------------------------------------------------------
 #use strict;
 use Win32::GUI();

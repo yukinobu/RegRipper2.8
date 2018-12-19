@@ -2,7 +2,7 @@
 # shellbags_test.pl
 #
 #
-# License: GPL v3 
+#  
 # copyright 2012 Quantum Analytics Research, LLC
 # Author: H. Carvey, keydet89@yahoo.com
 #-----------------------------------------------------------

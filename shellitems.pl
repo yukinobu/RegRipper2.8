@@ -22,7 +22,7 @@
 # Moore for writing the shell bag parser for Registry Decoder, as well as 
 # assistance with some parsing.
 #
-# License: GPL v3 
+# 
 # copyright 2012 Quantum Analytics Research, LLC
 # Author: H. Carvey, keydet89@yahoo.com
 #-----------------------------------------------------------

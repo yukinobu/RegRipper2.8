@@ -1,10 +1,6 @@
 #-----------------------------------------------------------
-# shellbags.pl
-# RR plugin to parse (Vista, Win7/Win2008R2) shell bags
-#
-# History:
-#   20130514 - added checking of ShellNoRoam\Bags subkeys for WinXP
-#   20120814 - created
+# itempos.pl
+# 
 #
 # References
 #    http://c0nn3ct0r.blogspot.com/2011/11/windows-shellbag-forensics.html
@@ -21,8 +17,7 @@
 # provided, Andrew Case for posting the Registry Decoder code, and Kevin 
 # Moore for writing the shell bag parser for Registry Decoder, as well as 
 # assistance with some parsing.
-#
-# License: GPL v3 
+# 
 # copyright 2013 Quantum Analytics Research, LLC
 # Author: H. Carvey, keydet89@yahoo.com
 #-----------------------------------------------------------
