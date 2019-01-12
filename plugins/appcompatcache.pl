@@ -2,6 +2,7 @@
 # appcompatcache.pl
 #
 # History:
+#  20190112 - updated parsing for Win8.1
 #  20180311 - updated for more recent version of Win10/Win2016
 #  20160528 - updated code to not de-dup entries based on filename
 #  20160217 - updated to correctly support Win10
@@ -43,7 +44,7 @@ my %config = (hive          => "System",
               hasDescr      => 0,
               hasRefs       => 0,
               osmask        => 31,  #XP - Win7
-              version       => 20180311);
+              version       => 20190112);
 
 sub getConfig{return %config}
 sub getShortDescr {
@@ -121,12 +122,18 @@ sub pluginmain {
 #				probe($app_data);
 				
 			}
+			elsif ($sig == 0x0) {
+# possible win 8.1 system
+				appWin81($app_data);			
+#				print $app_data;	
+			}
 			elsif ($sig == 0x30 || $sig == 0x34) {
 # Windows 10 system
 				appWin10($app_data);				
 			}
 			else {
 				::rptMsg(sprintf "Unknown signature: 0x%x",$sig);
+#				probe($app_data);
 			}
 # this is where we print out the files
 			foreach my $f (keys %files) {
@@ -325,6 +332,37 @@ sub appWin8 {
 # Unknown tag
 		}			
 	
+	}
+}
+
+#-----------------------------------------------------------
+# appWin81()
+# 
+#-----------------------------------------------------------
+sub appWin81 {
+	my $data = shift;
+	my $len = length($data);
+	my ($tag, $sz, $t0, $t1, $name, $name_len);
+	my $ct = 0;
+#	my $ofs = unpack("V",substr($data,0,4));
+	my $ofs = 0x80;
+	
+	while ($ofs < $len) {
+		$tag = substr($data,$ofs,4);
+		if ($tag eq "10ts") {
+			
+			$sz = unpack("V",substr($data,$ofs + 0x08,4));
+			$name_len   = unpack("v",substr($data,$ofs + 0x0c,2));
+			my $name      = substr($data,$ofs + 0x0e,$name_len);
+			$name =~ s/\00//g;
+#			($t0,$t1) = unpack("VV",substr($data,$ofs + 0x03 + $name_len,8));
+			($t0,$t1) = unpack("VV",substr($data,$ofs + 0x0e + $name_len + 0x0a,8));
+			$files{$ct}{filename} = $name;
+			$files{$ct}{modtime} = ::getTime($t0,$t1);
+
+			$ct++;
+			$ofs += ($sz + 0x0c);
+		}
 	}
 }
 
