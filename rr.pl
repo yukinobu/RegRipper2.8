@@ -8,6 +8,7 @@
 # version
 #
 # Change History:
+#  20190128 - added Time::Local, modifications to module Key.pm
 #  20130429 - minor updates, including not adding .txt files to Profile list
 #  20130425 - added alertMsg() functionality, updated to v2.8
 #  20120505 - Updated to v2.5
@@ -34,12 +35,13 @@
 # Functionality: 
 #   - plugins file is selectable
 # 
-# copyright 2013 Quantum Research Analytics, LLC
+# copyright 2013-2019 Quantum Research Analytics, LLC
 # Author: H. Carvey, keydet89@yahoo.com
 # 
 #-----------------------------------------------------------
 #use strict;
 use Win32::GUI();
+use Time::Local;
 use Parse::Win32Registry qw(:REG_);
 
 # Included to permit compiling via Perl2Exe
@@ -59,7 +61,7 @@ use Parse::Win32Registry qw(:REG_);
 #-----------------------------------------------------------
 # Global variables
 #-----------------------------------------------------------
-my $VERSION = "2\.8";
+my $VERSION = "2\.8_20190128";
 my %env; 
 my @alerts = ();
 
@@ -316,7 +318,7 @@ sub RR_OnAbout {
      "Parses Registry hive (NTUSER\.DAT, System, etc.) files, placing pertinent info in a report ".
      "file in a readable manner.\r\n".
      "\r\n".
-     "Copyright 2013 Quantum Analytics Research, LLC.\r\n".
+     "Copyright 2019 Quantum Analytics Research, LLC.\r\n".
      "H\. Carvey, keydet89\@yahoo\.com",
      "About...",
      MB_ICONINFORMATION | MB_OK,

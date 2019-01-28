@@ -8,6 +8,7 @@
 # Usage: see "_syntax()" function
 #
 # Change History
+#   20190128 - added Time::Local, modifications to module Key.pm
 #   20180406 - added "-uP" switch to update profiles
 #   20130801 - added File::Spec support, for cross-platform compat.
 #   20130716 - added 'push(@INC,$str);' line based on suggestion from
@@ -19,13 +20,14 @@
 #   20080419 - added '-g' switch (experimental)
 #   20080412 - added '-c' switch
 #
-# copyright 2013 Quantum Analytics Research, LLC
+# copyright 2013-2019 Quantum Analytics Research, LLC
 # Author: H. Carvey, keydet89@yahoo.com
 #
 #-------------------------------------------------------------------------
 use strict;
 use Parse::Win32Registry qw(:REG_);
 use Getopt::Long;
+use Time::Local;
 use File::Spec;
 
 # Included to permit compiling via Perl2Exe
@@ -62,7 +64,7 @@ $str =~ s/($path[scalar(@path) - 1])//;
 my $plugindir = File::Spec->catfile("plugins");
 #print "Plugins Dir = ".$plugindir."\n";
 # End code update
-my $VERSION = "2\.8_20180406";
+my $VERSION = "2\.8_20190128";
 my @alerts = ();
 
 if ($config{help} || !%config) {
@@ -256,7 +258,7 @@ Ex: C:\\>rip -r c:\\case\\system -f system
 
 All output goes to STDOUT; use redirection (ie, > or >>) to output to a file\.
   
-copyright 2018 Quantum Analytics Research, LLC
+copyright 2019 Quantum Analytics Research, LLC
 EOT
 }
 
