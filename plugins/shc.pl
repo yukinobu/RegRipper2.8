@@ -58,8 +58,9 @@ sub pluginmain {
 		
 		if (scalar(@vals) > 0) {
 			foreach my $v (@vals) {
-				
-				
+				my $name = $v->get_name();
+				my $data = $v->get_data();
+				::rptMsg($name." - ".$data);
 			}
 		}
 		else {
