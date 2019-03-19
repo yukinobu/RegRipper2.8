@@ -8,6 +8,7 @@
 # Usage: see "_syntax()" function
 #
 # Change History
+#   20190318 - modified code to allow the .exe to be run from anywhere within the file system
 #   20190128 - added Time::Local, modifications to module Key.pm
 #   20180406 - added "-uP" switch to update profiles
 #   20130801 - added File::Spec support, for cross-platform compat.
@@ -56,15 +57,17 @@ my $str = $0;
                    : (@path = split(/\//,$0));
 $str =~ s/($path[scalar(@path) - 1])//;
 
-# Suggested addition by Hal Pomeranz for compatibility with 
-# Linux
+# Suggested addition by Hal Pomeranz for compatibility with Linux
 #push(@INC,$str);
-
+# code updated 20190318
+my $plugindir;
+($^O eq "MSWin32") ? ($plugindir = $str."plugins/")
+                   : ($plugindir = File::Spec->catfile("plugins"));
 #my $plugindir = $str."plugins/";
-my $plugindir = File::Spec->catfile("plugins");
+#my $plugindir = File::Spec->catfile("plugins");
 #print "Plugins Dir = ".$plugindir."\n";
 # End code update
-my $VERSION = "2\.8_20190128";
+my $VERSION = "2\.8_20190318";
 my @alerts = ();
 
 if ($config{help} || !%config) {
