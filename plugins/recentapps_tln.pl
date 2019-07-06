@@ -2,6 +2,7 @@
 # recentapps_tln.pl
 #  
 # Change history
+#  20190513 - updated timestamp issue
 #  20171013 - created
 #
 # References
@@ -17,7 +18,7 @@ my %config = (hive          => "NTUSER\.DAT",
               hasDescr      => 0,
               hasRefs       => 0,
               osmask        => 22,
-              version       => 20171013);
+              version       => 20190513);
 
 sub getConfig{return %config}
 sub getShortDescr {
@@ -60,6 +61,12 @@ sub pluginmain {
 					      my $path = $r->get_value("Path")->get_data();
 					      my ($l1,$l2) = unpack("VV",$r->get_value("LastAccessedTime")->get_data());
 					      my $l = ::getTime($l1,$l2);
+# Update to plugin
+# If the LastAccessedTime for a RecentItem entry is 0, get the key LastWrite time instead					      
+					      if ($l == 0) {
+					      	$l = $r->get_timestamp();
+					      }
+					      
 					      ::rptMsg($l."|REG|||".$appid." RecentItem: ".$path);
 				      };
 						}

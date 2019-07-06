@@ -8,6 +8,8 @@
 # Usage: see "_syntax()" function
 #
 # Change History
+#   20190318 - modified code to allow the .exe to be run from anywhere within the file system
+#   20190128 - added Time::Local, modifications to module Key.pm
 #   20180406 - added "-uP" switch to update profiles
 #   20130801 - added File::Spec support, for cross-platform compat.
 #   20130716 - added 'push(@INC,$str);' line based on suggestion from
@@ -19,13 +21,14 @@
 #   20080419 - added '-g' switch (experimental)
 #   20080412 - added '-c' switch
 #
-# copyright 2013 Quantum Analytics Research, LLC
+# copyright 2013-2019 Quantum Analytics Research, LLC
 # Author: H. Carvey, keydet89@yahoo.com
 #
 #-------------------------------------------------------------------------
 use strict;
 use Parse::Win32Registry qw(:REG_);
 use Getopt::Long;
+use Time::Local;
 use File::Spec;
 
 # Included to permit compiling via Perl2Exe
@@ -54,15 +57,17 @@ my $str = $0;
                    : (@path = split(/\//,$0));
 $str =~ s/($path[scalar(@path) - 1])//;
 
-# Suggested addition by Hal Pomeranz for compatibility with 
-# Linux
+# Suggested addition by Hal Pomeranz for compatibility with Linux
 #push(@INC,$str);
-
+# code updated 20190318
+my $plugindir;
+($^O eq "MSWin32") ? ($plugindir = $str."plugins/")
+                   : ($plugindir = File::Spec->catfile("plugins"));
 #my $plugindir = $str."plugins/";
-my $plugindir = File::Spec->catfile("plugins");
+#my $plugindir = File::Spec->catfile("plugins");
 #print "Plugins Dir = ".$plugindir."\n";
 # End code update
-my $VERSION = "2\.8_20180406";
+my $VERSION = "2\.8_20190318";
 my @alerts = ();
 
 if ($config{help} || !%config) {
@@ -256,7 +261,7 @@ Ex: C:\\>rip -r c:\\case\\system -f system
 
 All output goes to STDOUT; use redirection (ie, > or >>) to output to a file\.
   
-copyright 2018 Quantum Analytics Research, LLC
+copyright 2019 Quantum Analytics Research, LLC
 EOT
 }
 
