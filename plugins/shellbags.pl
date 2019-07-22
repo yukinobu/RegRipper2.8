@@ -3,6 +3,7 @@
 # RR plugin to parse (Vista, Win7/Win2008R2) shell bags
 #
 # History:
+#   20190715 - updated to parse WPD devices better
 #   20180702 - update to parseGUID function
 #   20180117 - modification thanks to input/data from Mike Godfrey
 #   20160706 - update
@@ -50,12 +51,12 @@ my %config = (hive          => "USRCLASS\.DAT",
               hasShortDescr => 1,
               hasDescr      => 0,
               hasRefs       => 0,
-              version       => 20180702);
+              version       => 20190715);
 
 sub getConfig{return %config}
 
 sub getShortDescr {
-	return "Shell/BagMRU traversal in Win7 USRCLASS\.DAT hives";	
+	return "Shell/BagMRU traversal in Win7+ USRCLASS\.DAT hives";	
 }
 sub getDescr{}
 sub getRefs {}
@@ -182,8 +183,8 @@ sub pluginmain {
 	my $class = shift;
 	my $hive = shift;
 	::logMsg("Launching shellbags v.".$VERSION);
-	::rptMsg("shellbags v.".$VERSION); # banner
-    ::rptMsg("(".getHive().") ".getShortDescr()."\n"); # banner
+	::rptMsg("shellbags v.".$VERSION); 
+  ::rptMsg("(".getHive().") ".getShortDescr()."\n"); 
 	my %item = ();
 
 	my $reg = Parse::Win32Registry->new($hive);
@@ -388,9 +389,9 @@ sub parseVariableEntry {
 # Ref: http://msdn.microsoft.com/en-us/library/aa965725(v=vs.85).aspx	  	 	
 	  	my $stuff = $segs{"{b725f130-47ef-101a-a5f1-02608c9eebac}"};
 
-	  	my $tag = 1;
+	  	my $t = 1;
 	  	my $cnt = 0x10;
-	  	while($tag) {
+	  	while($t) {
 	  		my $sz = unpack("V",substr($stuff,$cnt,4));
 	  		my $id = unpack("V",substr($stuff,$cnt + 4,4));
 #--------------------------------------------------------------
@@ -401,7 +402,7 @@ sub parseVariableEntry {
 # 0x0c - size
 #--------------------------------------------------------------	  	
 	  		if ($sz == 0x00) {
-	  			$tag = 0;
+	  			$t = 0;
 	  			next;
 	  		}
 	  		elsif ($id == 0x0a) {
@@ -419,6 +420,24 @@ sub parseVariableEntry {
 	elsif (substr($data,4,4) eq "AugM") {
 		%item = parseFolderEntry($data);
 	}
+# Code for Windows Portable Devices
+# Added 20190715
+	elsif (parseGUID(substr($data,42,16)) eq "{27e2e392-a111-48e0-ab0c-e17705a05f85}") {
+		my ($n0, $n1, $n2) = unpack("VVV",substr($data,62,12));
+	
+		my $n0_name = substr($data,0x4A,($n0 * 2));
+		$n0_name =~ s/\00//g;
+		
+		my $n1_name = substr($data,(0x4A + ($n0 * 2)),($n1 * 2));
+		$n1_name =~ s/\00//g;
+		
+		if ($n0_name eq "") {
+			$item{name} = $n1_name;
+		}
+		else {
+			$item{name} = $n0_name;
+		}
+	}	
 # Following two entries are for Device Property data	
 	elsif ($tag == 0x7b || $tag == 0xbb || $tag == 0xfb) {
 		my ($sz1,$sz2,$sz3) = unpack("VVV",substr($data,0x3e,12));
