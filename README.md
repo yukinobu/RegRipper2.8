@@ -5,7 +5,7 @@ RegRipper version 2.8
 
 This is the GitHub repository for RegRipper version 2.8
 
-Updates 21090128
+Updates 20190128
 - added Time::Local module 
   - this allows plugins to be written that parse string-based date/time stamps, converting 
     them to epochs (for timelining, etc.)
