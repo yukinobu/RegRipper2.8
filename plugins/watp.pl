@@ -39,7 +39,7 @@ sub pluginmain {
 	::rptMsg("Launching watp v.".$VERSION);
 	::rptMsg("watp v.".$VERSION); # banner
 	::rptMsg("(".$config{hive}.") ".getShortDescr()."\n"); # banner 
-	my $key_path = ('Microsoft\\Windows Advanced Protection');,
+	my $key_path = ('Microsoft\\Windows Advanced Protection');
 	         
 	my $reg = Parse::Win32Registry->new($hive);
 	my $root_key = $reg->get_root_key;
