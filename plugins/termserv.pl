@@ -216,7 +216,7 @@ sub pluginmain {
 		
 		eval {
 			my $fallowfc = $key->get_value("fAllowUnsolicitedFullControl")->get_data();
-			::rptMsg("fAllowUnsolicitedFullControl value = ".$fallow);
+			::rptMsg("fAllowUnsolicitedFullControl value = ".$fallowfc);
 		};
 				
 		eval {
