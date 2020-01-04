@@ -95,7 +95,7 @@ sub pluginmain {
 					foreach my $d (keys %debug) {
 						::rptMsg($d."  LastWrite: ".gmtime($debug{$d}{lastwrite}));
 						::rptMsg("  Debugger             : ".$debug{$d}{debug}) if (exists $debug{$d}{debug});
-						::rptMsg("  Auto                 : ".$debug{$d}{auto} if (exists $debug{$d}{auto});
+						::rptMsg("  Auto                 : ".$debug{$d}{auto}) if (exists $debug{$d}{auto});
 						::alertMsg("Alert: imagefile: Debugger value found : ".$debug{$d}{debug}) if (exists $debug{$d}{debug});
 						::rptMsg("  CWDIllegalInDllSearch: ".$debug{$d}{dllsearch}) if (exists $debug{$d}{dllsearch});
 					}

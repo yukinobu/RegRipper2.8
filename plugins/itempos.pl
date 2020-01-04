@@ -1,6 +1,8 @@
 #-----------------------------------------------------------
 # itempos.pl
 # 
+# History:
+#   20191111 - Added default value to $jmp if $item{extver} cannot be determined.
 #
 # References
 #    http://c0nn3ct0r.blogspot.com/2011/11/windows-shellbag-forensics.html
@@ -264,7 +266,9 @@ sub parseFolderItem {
 	elsif ($item{extver} == 0x08) {
 		$jmp = 30;
 	}
-	else {}
+	else {
+        $jmp = 34;
+    }
 	
 	$ofs += $jmp;
 	
