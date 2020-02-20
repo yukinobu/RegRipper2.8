@@ -5,6 +5,23 @@ RegRipper version 2.8
 
 This is the GitHub repository for RegRipper version 2.8
 
+Note: This tool does NOT automatically process hive transaction logs.  If you need
+to incorporate data from hive transaction logs into your analysis, consider merging
+the data via Maxim Suhanov's yarp + registryFlush.py, or via Eric Zimmerman's rla.exe.
+
+Updates 20200220
+- Added warning that tool does not automatically process Registry hive transaction logs
+- Added check for dirty hives
+- Modified C:\Perl\site\lib\Parse\Win32Registry\WinNT\File.pm  
+  - if you're using the Perl version of this tool (Linux, Mac) be sure to copy File.pm  
+    from the repository and replace the appropriate file
+	
+Updates 20200104
+- Fixed issue with processing of key LastWrite times
+- Modified C:\Perl\site\lib\Parse\Win32Registry\WinNT\Base.pm
+  - if you're using the Perl version of this tool (Linux, Mac) be sure to copy Base.pm
+    from the repository and replace the appropriate file
+	
 Updates 20190128
 - added Time::Local module 
   - this allows plugins to be written that parse string-based date/time stamps, converting 
