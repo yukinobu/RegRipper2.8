@@ -60,8 +60,9 @@ sub pluginmain {
 					foreach my $v (@vals) {
 						::rptMsg($v->get_name()." -> ".$v->get_data());
 					}
-					::rptMsg("");
 				}
+				::rptMsg("");
+				
 # Check for Depend key				
 				if (my $dep = $s->get_subkey("Depend")) {
 					my @vals2 = $dep->get_list_of_values();
